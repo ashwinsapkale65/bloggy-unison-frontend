@@ -33,7 +33,7 @@ export function AuthForm({ onAuthSuccess }: AuthFormProps) {
     e.preventDefault();
     setIsLoading(true);
    try {
-      const res = await axios.post(`${API_BASE_URL}/api/auth/local*`, {
+      const res = await axios.post(`${API_BASE_URL}/api/auth/local`, {
         identifier: loginForm.email,
         password: loginForm.password,
       });
