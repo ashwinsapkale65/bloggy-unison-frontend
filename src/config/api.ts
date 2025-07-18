@@ -1,2 +1,2 @@
 export const API_BASE_URL =
-   "http://localhost:1337";
+   "https://strapi-backend-blogs-auth.onrender.com";
