@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Eye, EyeOff, Mail, Lock, User } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-
+import { API_BASE_URL } from "@/config/api";
 interface AuthFormProps {
   onAuthSuccess: () => void;
 }
@@ -33,7 +33,7 @@ export function AuthForm({ onAuthSuccess }: AuthFormProps) {
     e.preventDefault();
     setIsLoading(true);
    try {
-      const res = await axios.post("http://localhost:1337/api/auth/local", {
+      const res = await axios.post(`${API_BASE_URL}/api/auth/local*`, {
         identifier: loginForm.email,
         password: loginForm.password,
       });
@@ -70,7 +70,7 @@ export function AuthForm({ onAuthSuccess }: AuthFormProps) {
     setIsLoading(true);
 
     try {
-      const res = await axios.post("http://localhost:1337/api/auth/local/register", {
+      const res = await axios.post(`${API_BASE_URL}/api/auth/local/register`, {
         username: signupForm.name,
         email: signupForm.email,
         password: signupForm.password,
