@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -31,23 +32,28 @@ export function AuthForm({ onAuthSuccess }: AuthFormProps) {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    toast({
-      title: "Login successful!",
-      description: "Welcome back to BlogSpace."
-    });
-    
-    localStorage.setItem("user", JSON.stringify({
-      name: "Demo User",
-      email: loginForm.email
-    }));
-    
-    setIsLoading(false);
-    onAuthSuccess();
-  };
+   try {
+      const res = await axios.post("http://localhost:1337/api/auth/local", {
+        identifier: loginForm.email,
+        password: loginForm.password,
+      });
+
+      toast({ title: "Login successful!", description: `Welcome back, ${res.data.user.username}` });
+
+      localStorage.setItem("user", JSON.stringify(res.data.user));
+      localStorage.setItem("jwt", res.data.jwt);
+
+      onAuthSuccess();
+    } catch (err: any) {
+      toast({
+        title: "Login failed",
+        description: err.response?.data?.error?.message || "Something went wrong",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,22 +68,29 @@ export function AuthForm({ onAuthSuccess }: AuthFormProps) {
     }
     
     setIsLoading(true);
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    toast({
-      title: "Account created!",
-      description: "Welcome to BlogSpace."
-    });
-    
-    localStorage.setItem("user", JSON.stringify({
-      name: signupForm.name,
-      email: signupForm.email
-    }));
-    
-    setIsLoading(false);
-    onAuthSuccess();
+
+    try {
+      const res = await axios.post("http://localhost:1337/api/auth/local/register", {
+        username: signupForm.name,
+        email: signupForm.email,
+        password: signupForm.password,
+      });
+
+      toast({ title: "Account created!", description: `Welcome, ${res.data.user.username}` });
+
+      localStorage.setItem("user", JSON.stringify(res.data.user));
+      localStorage.setItem("jwt", res.data.jwt);
+
+      onAuthSuccess();
+    } catch (err: any) {
+      toast({
+        title: "Signup failed",
+        description: err.response?.data?.error?.message || "Something went wrong",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
